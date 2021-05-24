@@ -1,50 +1,47 @@
 import { observable, makeObservable, action, computed, runInAction } from 'mobx'
-import ApiManager from '../managers/ApiManager'
+import ApiManager from '../managers/APIManager'
 const apiManager = new ApiManager()
 
 export default class ClientsStore {
     constructor() {
         this.clients = []
-        this.employees = []
+        this.owners = []
         this.sales = []
-        this.emails = []
+        this.emails = 0
         this.outstandingClients = 0
         this.countries = {}
-        this.employeesSales = {}
-        this.emailTypes = 0
+        this.ownersSales = {}
+        this.email_types = ['A', 'B', 'C', 'D']
         this.months = ['January','February','March','April','May','June','July','August','September','October','November','December']
         makeObservable(this, {
             clients: observable,
-            employees: observable,
+            owners: observable,
             sales: observable,
             outstandingClients: observable,
             countries: observable,
-            emailTypes: observable,
+            email_types: observable,
             emails: observable,
             updateClients: action,
-            updateClientInfo: action,
-            updateEmployees: action,
-            updateEmails:action,
+            updateOwners: action,
             updateSales: action,
             addNewClient: action,
             sendEmail:action,
-            makeSale: action,
+            declare: action,
             numberOfEmails:computed,
-            employeesSalesArray:computed,
+            ownersSalesArray:computed,
             countrySalesArray:computed
         })
         this.updateClients()
-        this.updateEmployees()
+        this.updateOwners()
         this.updateSales()
-        this.updateEmails()
     }
 
     get numberOfEmails(){
-        return this.emails.length
+        return this.emails
     }
-    get employeesSalesArray(){
-        const arr = Object.keys(this.employeesSales).map(e => {
-            return{firstName: this.employeesSales[e].firstName, sales: this.employeesSales[e].sales}
+    get ownersSalesArray(){
+        const arr = Object.keys(this.ownersSales).map(e => {
+            return{firstName: this.ownersSales[e].firstName, sales: this.ownersSales[e].sales}
         })
         return arr
     }
@@ -56,6 +53,8 @@ export default class ClientsStore {
     }
 
     updateClients = async () => {
+        this.outstandingClients = 0
+        this.emails = 0
         const clients = await apiManager.getData()
         runInAction(()=>{
         clients.forEach(c => {
@@ -63,24 +62,24 @@ export default class ClientsStore {
                 this.outstandingClients++
             }
             if (c.email_type) {
-                this.emailTypes++
+                this.emails++
             } 
         })
         this.clients = clients
     })
     return clients
-}
-    updateEmployees = async () => {
-        const employees = await apiManager.getData("employees")
+    }
+    updateOwners = async () => {
+        const owners = await apiManager.getOwners()
         runInAction(()=>{
-            this.employees = employees
+            this.owners = owners
         })
-        return employees
+        return owners
     }
     updateSales = async () => {
         const sales = await apiManager.getData("sales")
         runInAction(()=>{
-            this.employeesSales={}
+            this.ownersSales={}
             this.sales = sales
             sales.forEach(s => {
                 if (this.countries[s.country]) {
@@ -88,10 +87,10 @@ export default class ClientsStore {
                 } else {
                     this.countries[s.country] = 1
                 }
-                if (this.employeesSales[s.employeeId]) {
-                    this.employeesSales[s.employeeId].sales++
+                if (this.ownersSales[s.employeeId]) {
+                    this.ownersSales[s.employeeId].sales++
                 } else {
-                    this.employeesSales[s.employeeId] = {
+                    this.ownersSales[s.employeeId] = {
                         sales: 1,
                         firstName: s.employeeFirstName
                     }
@@ -100,15 +99,8 @@ export default class ClientsStore {
         })
         return sales
     }
-    updateEmails = async () => {
-        const emails = await apiManager.getData("emails")
-        runInAction(()=>{
-            this.emails = emails
-        })
-        return emails
-    }
-    updateClientInfo = async (newInfo) => {
-        const response = await apiManager.updateClientInfo(newInfo)
+    updateOwner = async (cId, oId) => {
+        const response = await apiManager.transferOwner(cId, oId)
         await this.updateClients()
         return response
     }
@@ -117,14 +109,13 @@ export default class ClientsStore {
         await this.updateClients()
         return response
     }
-    sendEmail = async (clientEmail, employeeId, type) => {
-        const response = await apiManager.sendEmail(clientEmail, employeeId, type)
+    sendEmail = async (cId, ET) => {
+        const response = await apiManager.sendET(cId, ET)
         await this.updateClients()
-        await this.updateEmails()
         return response
     }
-    makeSale = async (clientId, employeeId) => {
-        const response = await apiManager.makeSale(clientId, employeeId)
+    declare = async (clientId) => {
+        const response = await apiManager.declare(clientId)
         await this.updateClients()
         await this.updateSales()
         return response

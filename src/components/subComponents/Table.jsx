@@ -17,18 +17,18 @@ const columns = [
     {
         field: 'date', headerName: 'First contact', width: 160,
         valueGetter: (params) =>
-            `${new Date(params.row.firsContactDate).toLocaleDateString()}`
+            `${new Date(params.row.date).toLocaleDateString()}`
     }, { field: 'email', headerName: 'Email', width: 250 },
     {
         field: 'email-type', headerName: 'Email Type', width: 160,
         valueGetter: (params) =>
-            `${params.row.emailType === 'null' ? '-' : params.row.emailType}`
+            `${params.row.email_type === 'null' ? '-' : params.row.email_type}`
     }, {
-        field: 'employeeFullName',
+        field: 'ownerFullName',
         headerName: 'Owner',
         width: 160,
         valueGetter: (params) =>
-            `${params.row.employeelast || ''} ${params.row.employeefirst || ''}`,
+            `${params.row.owner || ''}`,
     }
     , {
         field: 'Sold', headerName: 'Sold', width: 130,
@@ -45,6 +45,9 @@ const Table = inject("clientsStore","inputsStore")(observer(function ({inputsSto
     const handleRowClick = (e) => {
         inputsStore.emptyInputs("updateMenuInputs")
         inputsStore.handleInputs("updateMenuInputs","id",e.row.id)
+        inputsStore.handleInputs("updateMenuInputs","last",e.row.last)
+        inputsStore.handleInputs("updateMenuInputs","first",e.row.first)
+        inputsStore.handleInputs("updateMenuInputs","country",e.row.country)
         setShouldUpdateShow(true)
     }
     const hideUpdateMenu = () => {

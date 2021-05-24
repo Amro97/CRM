@@ -8,7 +8,6 @@ const App = inject("clientsStore")(observer(function ({ clientsStore }) {
   return (
     <div className="mainContainer">
       <NavBar />
-      
     </div>
   )
 }))

@@ -6,9 +6,9 @@ import { inject, observer } from 'mobx-react';
 
 
 const UpdateClientActions = inject("clientsStore", "inputsStore")(observer(({ clientsStore, inputsStore }) => {
-    const { emailType, owner_id } = inputsStore.actionsUpdate
-    const { clients, owners } = clientsStore
-    const { id, email ,owner_id: selectedowner_id} = inputsStore.selectedClient
+    const { email_type, owner } = inputsStore.actionsUpdate
+    const { clients, owners, email_types } = clientsStore
+    const { id } = inputsStore.selectedClient
 
     const handleInput = function ({ target }) {
         const { name, value } = target
@@ -19,7 +19,8 @@ const UpdateClientActions = inject("clientsStore", "inputsStore")(observer(({ cl
             if (selectedClient) {
                 inputsStore.handleClientSearch(value, selectedClient)
                 return
-            } else {
+            }
+            else {
                 inputsStore.handleClientSearch(value, {})
                 return
             }
@@ -39,8 +40,8 @@ const UpdateClientActions = inject("clientsStore", "inputsStore")(observer(({ cl
         }
     }
     const changeOwner = async function () {
-        if (id && owner_id) {
-            await clientsStore.updateClientInfo({ owner_id, id })
+        if (id) {
+            await clientsStore.updateOwner(id, owner)
             const selected = clientsStore.clients.find(c => c.id === id)
             inputsStore.handleClientSearch(id, selected)
             inputsStore.emptyInputs("actionsUpdate")
@@ -48,18 +49,17 @@ const UpdateClientActions = inject("clientsStore", "inputsStore")(observer(({ cl
     }
     const sendEmail = async function () {
 
-        if (email && selectedowner_id && emailType) {
-            await clientsStore.sendEmail(email, selectedowner_id, emailType)
+        if (id) {
+            await clientsStore.sendEmail(id, email_type)
             const selected = clientsStore.clients.find(c => c.id === id)
             inputsStore.handleClientSearch(id, selected)
             inputsStore.emptyInputs("actionsUpdate")
         }
     }
-    const makeSale = async ()=> {
-        if (id && selectedowner_id) {
-        await clientsStore.makeSale(id,selectedowner_id)
-
-        const selected = clientsStore.clients.find(c => c.id === id)
+    const declare = async () => {
+        if (id) {
+            await clientsStore.declare(id)
+            const selected = clientsStore.clients.find(c => c.id === id)
             inputsStore.handleClientSearch(id, selected)
             console.log(selected.sold);
         }
@@ -84,27 +84,30 @@ const UpdateClientActions = inject("clientsStore", "inputsStore")(observer(({ cl
 
                 <FormControl className="select">
                     <InputLabel>Owner</InputLabel>
-                    <NativeSelect onChange={handleInput} value={owner_id} name="owner_id">
-                        <option aria-label="None" value="" />
-                        {owners.map(e => <option key={e.id} value={e.id}>{e.employeelast} {e.employeefirst}</option>)}
+                    <NativeSelect onChange={handleInput} value={owner} name="owner">
+                        <option aria-label="None" />
+                        {owners.map(o => <option key={o.id} value={o.owner}>
+                            {o.owner}
+                        </option>)}
                     </NativeSelect>
                 </FormControl>
-                <Button onClick={changeOwner}> Transfer Ownership</Button>
+                <Button onClick={changeOwner}> Transfer Ownership </Button>
             </div>
             <div className="sendEmail">
 
                 <FormControl className="select">
                     <InputLabel>Email Type</InputLabel>
-                    <NativeSelect onChange={handleInput} value={emailType} name="emailType">
-                        <option aria-label="None" value="" />
-                        {Object.keys(clientsStore.emailTypes).map((t, i) => <option key={i} value={t}>{t}</option>)}
+                    <NativeSelect onChange={handleInput} value={email_type} name="email_type">
+                        <option aria-label="None" />
+                        {email_types.map(e => <option key={e} value={e}>
+                            {e}
+                        </option>)}
                     </NativeSelect>
                 </FormControl>
                 <Button onClick={sendEmail}>Send Email</Button>
             </div>
-            <Button onClick={makeSale}>Declare Sale</Button>
+            <Button onClick={declare}>Declare Sale</Button>
         </form>
-
     );
 }))
 

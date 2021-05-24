@@ -19,7 +19,7 @@ const BadgesContainer = inject("clientsStore")(observer(({clientsStore}) => {
     const firstDayOfMonth = Date.parse(new Date(`1/${monthIndex+1}/${currentYear}`))
     let numNewClients = 0
     clientsStore.clients.forEach(c =>{
-        if (c.firsContactDate > firstDayOfMonth) {
+        if (c.date > firstDayOfMonth) {
             numNewClients++
         }
     })

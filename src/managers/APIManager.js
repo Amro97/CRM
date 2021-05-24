@@ -2,11 +2,15 @@ const axios = require('axios')
 
 class ApiManager {
     constructor() {
-        this.url = 'http://localhost:3001/'
+        this.url = 'http://localhost:3000/'
     }
    
     async getData() {
-        const response =await axios.get(`${this.url}clients`)
+        const response = await axios.get(`${this.url}clients`)
+        return response.data
+    }
+    async getOwners() {
+        const response = await axios.get(`${this.url}owners`)
         return response.data
     }
     async postClient(client) {
@@ -16,13 +20,13 @@ class ApiManager {
         return await axios.put(`${this.url}client/${newInfo.id}`, newInfo)
     }
     async transferOwner(clientId, newOwner){
-        return await axios.put(`${this.url}update/owner/${clientId}`, {clientId, newOwner})
+        return await axios.put(`${this.url}update/owner/${clientId}`, {newOwner})
     }
     async sendET( clientId, ET ){
-        return await axios.put(`${this.url}update/emailType/${clientId}`, {clientId, ET})
+        return await axios.put(`${this.url}update/email_type/${clientId}`, {ET})
     }
     async declare(clientId){
-        return await axios.put(`${this.url}declaration/${clientId}`, {clientId})
+        return await axios.put(`${this.url}update/declaration/${clientId}`)
     }
   
 }

@@ -6,7 +6,7 @@ import ClientsStore from './stores/ClientsStore'
 import InputsStore from './stores/InputsStore'
 const clientsStore = new ClientsStore()
 const inputsStore = new InputsStore()
-const store = { clientsStore,inputsStore }
+const store = { clientsStore, inputsStore }
 ReactDOM.render(
   <Provider {...store}>
     <App />

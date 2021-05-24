@@ -99,7 +99,7 @@ class SQLManager {
             return error;
         }
     }
-    async getEmailType(ET) {
+    async getEmail_type(ET) {
         if(ET){
         const query = `
         SELECT * FROM email_type 
@@ -123,7 +123,7 @@ class SQLManager {
         await this.addOwner(owner)
         const { id: country_id } = await this.getCountry(country)
         const { id: owner_id } = await this.getOwner(owner)
-        const email_type_id = await this.getEmailType(email_type)
+        const email_type_id = await this.getEmail_type(email_type)
         const sold = 0
 
         try {
@@ -164,12 +164,11 @@ class SQLManager {
               SELECT client.id, last, first,
                      email, sold, date,
                      email_type, owner, country
-              FROM client, country, email_type, owner
-              WHERE
-                  client.country_id = country.id AND
-                  client.owner_id = owner.id AND
-                  client.email_type_id = email_type.id
-              ORDER BY client.first, client.last;
+              FROM client
+              LEFT JOIN country ON client.country_id = country.id
+              LEFT JOIN email_type ON client.email_type_id = email_type.id
+              LEFT JOIN owner ON client.owner_id = owner.id
+              ORDER BY client.last, client.first;
               `)
             return res
 
@@ -190,7 +189,7 @@ class SQLManager {
         return res
     }
     async sendET(clientId, ET) {
-        const { id: email_type_id } = await this.getEmailType(ET)
+        const { id: email_type_id } = await this.getEmail_type(ET)
         const [res, meta] = await this.sequelize.query(`
         UPDATE client
         SET 

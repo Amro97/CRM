@@ -2,7 +2,7 @@
 // // import {ApiManager} from './src/managers/APIManager'
 // // const apiManager = require('./src/managers/APIManager')
 // getData = async () => {
-//     const response = await axios.get(`http://localhost:3001/clients`)
+//     const response = await axios.get(`http://localhost:3000/clients`)
 //     return response.data
 // }
 // updateClients = async () => {
@@ -16,11 +16,11 @@
 //     //     if (!c.sold) {
 //     //         this.outstandingClients++
 //     //     }
-//     //     if (this.emailTypes[c.emailType]) {
-//     //         this.emailTypes[c.emailType]++
+//     //     if (this.email_types[c.email_type]) {
+//     //         this.email_types[c.email_type]++
 //     //     } 
 //     //     else {
-//     //         this.emailTypes[c.emailType] = 1
+//     //         this.email_types[c.email_type] = 1
 //     //     }
 //     // })
 
@@ -92,7 +92,7 @@
 // //         }
 // //     }
 
-// // getEmailType = async (ET) => {
+// // getEmail_type = async (ET) => {
 // //         const query = `
 // //         SELECT * FROM email_type 
 // //         WHERE email_type = "${ET}";`
@@ -117,7 +117,7 @@
 // //           FROM client, country, email_type, owner
 // //           WHERE
 // //               client.country_id = country.id AND
-// //               client.owner_id = owner.id AND
+// //               client.owner = owner.id AND
 // //               client.email_type_id = email_type.id
 // //           ORDER BY client.first, client.last;
 // //           `)

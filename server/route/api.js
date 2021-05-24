@@ -42,10 +42,12 @@ res.send({response})
 router.put('/update/owner/:clientId', async (req, res) => {
     const { clientId } = req.params
     const { newOwner } = req.body
+    console.log(clientId)
+    console.log(newOwner)
     const response = await sqlManager.transferOwner(clientId, newOwner)
     res.send({response})
 })
-router.put('/update/emailType/:clientId', async (req, res) => {
+router.put('/update/email_type/:clientId', async (req, res) => {
     const { clientId } = req.params
     const { ET } = req.body
     const response = await sqlManager.sendET(clientId, ET)

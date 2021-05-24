@@ -1,11 +1,11 @@
 import React from 'react'
 import CountrySalesChart from './CountrySalesChart'
-import ownersalesChart from './ownersalesChart'
+// import ownersalesChart from './ownersalesChart'
 
 const Charts = () => {
     return (
         <div className="chartsContainer">
-            <ownersalesChart/>
+            {/* <ownersalesChart/> */}
             <CountrySalesChart/>
         </div>
     )

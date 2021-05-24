@@ -15,8 +15,8 @@
 // let owner = data.map(d => d.owner)
 // owner = owner.filter((elem, index, self) => index === self.indexOf(elem))
 
-// let emailType = data.map(d => d.emailType)
-// emailType = emailType.filter((elem, index, self) => index === self.indexOf(elem))
+// let email_type = data.map(d => d.email_type)
+// email_type = email_type.filter((elem, index, self) => index === self.indexOf(elem))
 
 // const addValue = async function (table, type) {
 //     let query =`INSERT INTO ${table} VALUES (null, '${type}')`
@@ -31,21 +31,21 @@
 // }
 
 // const addClient = async (client) => {
-//     let emailType = client.emailType !== null ? await findByID('email_type', 'email_type', client.emailType) : null
+//     let email_type = client.email_type !== null ? await findByID('email_type', 'email_type', client.email_type) : null
 //     let owner = await findByID('owner', 'owner', client.owner)
 //     let country = await findByID('country', 'country', client.country)
 //     let date = new Date (client.firstContact).toLocaleDateString()
 //     let nameSplit = client.name.split(' ')
 
 //     let query =`INSERT INTO client
-//     VALUES (null, '${nameSplit[1]}', '${nameSplit[0]}', '${client.email}', ${client.sold}, '${date}', ${emailType}, ${owner}, ${country})`
+//     VALUES (null, '${nameSplit[1]}', '${nameSplit[0]}', '${client.email}', ${client.sold}, '${date}', ${email_type}, ${owner}, ${country})`
 //     let result = await sequelize.query(query)
 //     return result[0]
 // }
 
-// // console.log(emailType)
+// // console.log(email_type)
 // // console.log(owner)
-// emailType.forEach(e => addValue('email_type', e))
+// email_type.forEach(e => addValue('email_type', e))
 // countries.forEach(c => addValue('country', c))
 // owner.forEach(o => addValue('owner', o))
 // data.forEach(d => addClient(d))

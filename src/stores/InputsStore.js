@@ -3,17 +3,17 @@ export default class InputsStore {
     constructor() {
         this.updateMenuInputs = {
             id: undefined,
-            firstName: "",
-            surName: "",
+            last: "",
+            first: "",
             country: "",
             email: "",
-            employeeId: undefined,
+            owner: "",
             sold: undefined
         }
         this.actionsUpdate = {
-            clientSearch: '',
-            employeeId: undefined,
-            emailType: "",
+            clientSearch: "",
+            owner: "",
+            email_type: "",
             sold: undefined
         }
         this.selectedClient = {}
@@ -38,6 +38,7 @@ export default class InputsStore {
         this[form][property] = value
     }
     emptyInputs(form) {
+        console.log(form)
         for (const key in this[form]) {
             this[form][key] = ""
         }

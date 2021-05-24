@@ -8,7 +8,7 @@ const Analytics = () => {
             <BadgesContainer/>
             
             <br/><br/>
-            <Charts/>
+            {/* <Charts/> */}
         </div>
     )
 }
