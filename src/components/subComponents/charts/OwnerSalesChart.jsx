@@ -8,7 +8,7 @@ const ownersalesChart = inject("clientsStore")(observer(({ clientsStore }) => {
     return (
         <div className="ownersalesChart chartContainer">
 
-        <Typography variant='h5'>Sales By Employee</Typography>
+        <Typography variant='h5'>Sales By Owner</Typography>
         <ResponsiveContainer  width='80%' height={300} >
         <BarChart data={clientsStore.ownersSalesArray}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>

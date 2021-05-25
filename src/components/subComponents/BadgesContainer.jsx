@@ -5,6 +5,7 @@ import emailIcon from './badgeIcons/email.png'
 import clientIcon from './badgeIcons/clients.png'
 import newClientIcon from './badgeIcons/newClients.png'
 import globe from './badgeIcons/globe.png'
+const moment = require('moment')
 
 const BadgesContainer = inject("clientsStore")(observer(({clientsStore}) => {
     let hottestCountry = Object.keys(clientsStore.countries)[0]
@@ -15,11 +16,11 @@ const BadgesContainer = inject("clientsStore")(observer(({clientsStore}) => {
     })
     const monthIndex = new Date().getMonth()
     const currentMonth = clientsStore.months[monthIndex]
-    const currentYear = new Date().getFullYear()
-    const firstDayOfMonth = Date.parse(new Date(`1/${monthIndex+1}/${currentYear}`))
+    const firstDayOfMonth = Date.parse(moment().clone().startOf('month').format('MM-DD-YYYY'))
     let numNewClients = 0
     clientsStore.clients.forEach(c =>{
-        if (c.date > firstDayOfMonth) {
+        const date = Date.parse(c.date)
+        if (date > firstDayOfMonth) {
             numNewClients++
         }
     })

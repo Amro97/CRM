@@ -6,7 +6,6 @@ export default class ClientsStore {
     constructor() {
         this.clients = []
         this.owners = []
-        this.sales = []
         this.emails = 0
         this.outstandingClients = 0
         this.countries = {}
@@ -16,7 +15,6 @@ export default class ClientsStore {
         makeObservable(this, {
             clients: observable,
             owners: observable,
-            sales: observable,
             outstandingClients: observable,
             countries: observable,
             email_types: observable,
@@ -41,7 +39,7 @@ export default class ClientsStore {
     }
     get ownersSalesArray(){
         const arr = Object.keys(this.ownersSales).map(e => {
-            return{firstName: this.ownersSales[e].firstName, sales: this.ownersSales[e].sales}
+            return{name: e, sales: this.ownersSales[e]}
         })
         return arr
     }
@@ -77,27 +75,22 @@ export default class ClientsStore {
         return owners
     }
     updateSales = async () => {
-        const sales = await apiManager.getData("sales")
+        const clients = await apiManager.getData()
         runInAction(()=>{
             this.ownersSales={}
-            this.sales = sales
-            sales.forEach(s => {
+            clients.forEach(s => {
                 if (this.countries[s.country]) {
                     this.countries[s.country]++
                 } else {
                     this.countries[s.country] = 1
                 }
-                if (this.ownersSales[s.employeeId]) {
-                    this.ownersSales[s.employeeId].sales++
+                if (this.ownersSales[s.owner]) {
+                    this.ownersSales[s.owner]++
                 } else {
-                    this.ownersSales[s.employeeId] = {
-                        sales: 1,
-                        firstName: s.employeeFirstName
-                    }
+                    this.ownersSales[s.owner] = 1
                 }
             })
         })
-        return sales
     }
     updateOwner = async (cId, oId) => {
         const response = await apiManager.transferOwner(cId, oId)
