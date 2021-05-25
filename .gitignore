@@ -12,6 +12,10 @@
 /build
 
 # misc
+countries.js
+data.json
+migration.js
+testing.js
 .env
 .DS_Store
 .env.local
