@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 const CountrySalesChart = inject("clientsStore")(observer(({ clientsStore }) => {
 
     return (
-        <div className="ownersalesChart chartContainer">
+        <div className="chartContainer">
 
             <Typography className="chartTitle" variant='h5'>Sales By Country</Typography>
             <ResponsiveContainer width='80%' height={300} >

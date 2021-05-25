@@ -1,5 +1,6 @@
 import { observable, makeObservable, action, computed, runInAction } from 'mobx'
 import ApiManager from '../managers/APIManager'
+const moment = require('moment')
 const apiManager = new ApiManager()
 
 export default class ClientsStore {
@@ -10,8 +11,9 @@ export default class ClientsStore {
         this.outstandingClients = 0
         this.countries = {}
         this.ownersSales = {}
+        this.salesBydate = {}
         this.email_types = ['A', 'B', 'C', 'D']
-        this.months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+        this.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         makeObservable(this, {
             clients: observable,
             owners: observable,
@@ -23,61 +25,75 @@ export default class ClientsStore {
             updateOwners: action,
             updateSales: action,
             addNewClient: action,
-            sendEmail:action,
+            sendEmail: action,
             declare: action,
-            numberOfEmails:computed,
-            ownersSalesArray:computed,
-            countrySalesArray:computed
+            numberOfEmails: computed,
+            ownersSalesArray: computed,
+            countrySalesArray: computed,
+            dateSalesArray: computed
         })
         this.updateClients()
         this.updateOwners()
         this.updateSales()
     }
 
-    get numberOfEmails(){
+    get numberOfEmails() {
         return this.emails
     }
-    get ownersSalesArray(){
-        const arr = Object.keys(this.ownersSales).map(e => {
-            return{name: e, sales: this.ownersSales[e]}
+    get ownersSalesArray() {
+        const arr = Object.keys(this.ownersSales).map(o => {
+            return { name: o, sales: this.ownersSales[o] }
+        })
+        arr.sort((a, b) => (b.sales > a.sales) ? 1 : -1)
+        return arr
+    }
+    get countrySalesArray() {
+        const arr = Object.keys(this.countries).map(c => {
+            return { name: c, sales: this.countries[c] }
         })
         return arr
     }
-    get countrySalesArray(){
-        const arr = Object.keys(this.countries).map(c =>{
-            return{name: c, sales: this.countries[c]}
+    get dateSalesArray() {
+        const arr = Object.keys(this.salesBydate).map(d => {
+            return { name: d, sales: this.salesBydate[d] }
         })
+        arr.sort(( a, b ) => (this.months.indexOf(a.name) - this.months.indexOf(b.name)))
+        console.log(arr)
         return arr
     }
+
+
 
     updateClients = async () => {
         this.outstandingClients = 0
         this.emails = 0
         const clients = await apiManager.getData()
-        runInAction(()=>{
-        clients.forEach(c => {
-            if (!c.sold) { 
-                this.outstandingClients++
-            }
-            if (c.email_type) {
-                this.emails++
-            } 
+        runInAction(() => {
+            clients.forEach(c => {
+                if (!c.sold) {
+                    this.outstandingClients++
+                }
+                if (c.email_type) {
+                    this.emails++
+                }
+            })
+            this.clients = clients
         })
-        this.clients = clients
-    })
-    return clients
+        return clients
     }
     updateOwners = async () => {
         const owners = await apiManager.getOwners()
-        runInAction(()=>{
+        runInAction(() => {
             this.owners = owners
         })
         return owners
     }
     updateSales = async () => {
         const clients = await apiManager.getData()
-        runInAction(()=>{
-            this.ownersSales={}
+        runInAction(() => {
+            this.ownersSales = {}
+            this.countries = {}
+            this.salesBydate = {}
             clients.forEach(s => {
                 if (this.countries[s.country]) {
                     this.countries[s.country]++
@@ -88,6 +104,13 @@ export default class ClientsStore {
                     this.ownersSales[s.owner]++
                 } else {
                     this.ownersSales[s.owner] = 1
+                }
+                const date = new Date(s.date)
+                const month = this.months[date.getMonth()]
+                if (this.salesBydate[month]) {
+                    this.salesBydate[month]++
+                } else {
+                    this.salesBydate[month] = 1
                 }
             })
         })
